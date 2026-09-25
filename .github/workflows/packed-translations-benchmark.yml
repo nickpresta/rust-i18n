@@ -1,0 +1,46 @@
+name: Packed translations benchmark
+
+on:
+  push:
+    branches:
+      - nick/packed-translation-benchmark-ci
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: longbridge/rust-i18n
+          ref: c47194deeee01c7ce75b883193ed96fc048df235
+          path: upstream-main
+      - name: Record runner resources
+        run: |
+          rustc -Vv
+          cargo -V
+          free -h
+          df -h .
+      - name: Run serialized benchmark matrix
+        run: |
+          python3 benchmarks/packed_translations/run_matrix.py \
+            --main "$GITHUB_WORKSPACE/upstream-main" \
+            --candidate "$GITHUB_WORKSPACE" \
+            --work-dir "$RUNNER_TEMP/packed-translations" \
+            --max-rss-gib 12 \
+            --max-seconds 1800 \
+            --min-disk-gib 2 \
+            --min-swap-mib 0 \
+            --warm-online
+      - name: Save benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: packed-translations-results
+          path: |
+            ${{ runner.temp }}/packed-translations/metadata.json
+            ${{ runner.temp }}/packed-translations/results.jsonl
+            ${{ runner.temp }}/packed-translations/*.log
+          if-no-files-found: warn
+          retention-days: 14
