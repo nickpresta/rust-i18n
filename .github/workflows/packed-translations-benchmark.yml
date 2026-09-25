@@ -1,6 +1,7 @@
 name: Packed translations benchmark
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - nick/packed-translation-benchmark-ci
