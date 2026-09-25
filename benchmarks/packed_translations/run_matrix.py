@@ -124,6 +124,7 @@ def run_guarded(command: list[str], cwd: Path, env: dict, log: Path, args) -> di
     started = time.monotonic()
     peak_group = peak_rustc = 0
     reason = None
+    guard_trigger_seconds = None
     with log.open("w") as handle:
         proc = subprocess.Popen(
             time_cmd + command, cwd=cwd, env=env, stdout=handle,
@@ -151,6 +152,7 @@ def run_guarded(command: list[str], cwd: Path, env: dict, log: Path, args) -> di
                     elif memory_free is not None and memory_free < args.min_memory_percent:
                         reason = "memory_guard"
                 if reason:
+                    guard_trigger_seconds = elapsed
                     stop_group(proc.pid)
                     break
                 sample += 1
@@ -164,8 +166,17 @@ def run_guarded(command: list[str], cwd: Path, env: dict, log: Path, args) -> di
                else r"Maximum resident set size \(kbytes\):\s*(\d+)")
     matches = re.findall(pattern, output, re.M)
     peak_time_bytes = int(matches[-1]) * (1 if sys.platform == "darwin" else 1024) if matches else None
+    if sys.platform == "darwin":
+        timing = re.search(r"^\s*([0-9.]+)\s+real\b", output, re.M)
+        command_seconds = float(timing.group(1)) if timing else None
+    else:
+        timing = re.search(r"Elapsed \(wall clock\) time \(h:mm:ss or m:ss\):\s*([0-9:.]+)", output)
+        parts = timing.group(1).split(":") if timing else []
+        command_seconds = sum(float(part) * 60**power for power, part in enumerate(reversed(parts))) if parts else None
     return {
         "seconds": round(time.monotonic() - started, 3),
+        "command_seconds": command_seconds,
+        "guard_trigger_seconds": round(guard_trigger_seconds, 3) if guard_trigger_seconds is not None else None,
         "exit_code": exit_code,
         "status": reason or ("success" if exit_code == 0 else "failed"),
         "peak_group_rss_bytes_sampled": peak_group * 1024,
