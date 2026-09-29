@@ -148,7 +148,7 @@ def render_build(rows, metadata, out):
                (.5, 1, 2, 5, 10, 20, 50, 100, 300), True, True)
     plot_panel(svg, 815, 190, 730, 640, "Peak resident memory", "GB · completed builds · logarithmic scale", memory,
                lambda x: f"{x:.2f}" if x < 1 else f"{x:.1f}", .1, 20,
-               (.1, .2, .5, 1, 2, 5, 10, 20), True)
+               (.1, .2, .5, 1, 2, 5, 10, 20), True, True)
     svg.text(62, 867, "Translations per corpus shown at left. Bars are medians; repeats were 3 at 8k/16k, 2 at 32k, 1 at 863,870.", 18, MUTED)
     if elapsed[("xlarge", "main")]["median"] is None:
         svg.text(62, 896, "The upstream 863,870 build was stopped by a host resource guard; its completion time and peak memory are unknown.", 18, GUARD)

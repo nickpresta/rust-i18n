@@ -1,6 +1,10 @@
 # Packed translation benchmark
 
-For the newer, compile-only comparison against upstream 4.2.3, see
+For the current PR head rebased on upstream main, see the
+[same-base Linux benchmark](final-head-2026-09-28.md), including the guarded
+863,870-translation upstream attempt and the 256-translation small-table check.
+
+For the earlier, different-base compile-only comparison against upstream 4.2.3, see
 [the pinned latest-main run](latest-main-2026-09-28.md). The results below
 remain the earlier 4.2.2 comparison.
 

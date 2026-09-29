@@ -1,0 +1,39 @@
+{
+  "main_sha": "fb1deb45f4fafa8fec708d97051a3a0031d2cd5c",
+  "candidate_sha": "538b338c76ccace3758545deeb29a1b76b19de24",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "tiers": [
+    [
+      "small",
+      8,
+      1000,
+      3
+    ],
+    [
+      "medium",
+      16,
+      1000,
+      3
+    ],
+    [
+      "large",
+      32,
+      1000,
+      2
+    ]
+  ],
+  "build_env": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0"
+  },
+  "guards": {
+    "max_rss_gib": 9.0,
+    "max_seconds": 900,
+    "min_disk_gib": 2.0,
+    "min_swap_mib": 0.0,
+    "min_memory_percent": 15.0
+  }
+}
