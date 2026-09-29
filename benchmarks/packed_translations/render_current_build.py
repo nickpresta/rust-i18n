@@ -11,7 +11,7 @@ import subprocess
 from render_charts import GRID, GUARD, MAIN, MUTED, PR, TEXT, Svg
 
 
-LABELS = {"small": "8,000", "medium": "16,000", "large": "32,000"}
+LABELS = {"tiny": "256", "small": "8,000", "medium": "16,000", "large": "32,000"}
 
 
 def summarize(rows, tier, variant, field):

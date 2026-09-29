@@ -22,6 +22,7 @@ from gen_corpus import generate
 
 
 TIERS = (
+    ("tiny", 8, 32, 3),
     ("small", 8, 1_000, 3),
     ("medium", 16, 1_000, 3),
     ("large", 32, 1_000, 2),
