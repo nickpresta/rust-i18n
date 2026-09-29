@@ -300,9 +300,16 @@ def main() -> None:
                                           args.work_dir / f"{tier}-{variant}-runtime-{sample}-{trial}.log", args)
                     value = json.loads(runtime.pop("runtime_output")) if runtime["runtime_output"] else None
                     runtime.pop("compile_seen")
+                    if runtime["status"] == "success" and value is None:
+                        runtime["status"] = "missing_runtime_output"
                     append_result(output, dict(info, tier=tier, variant=variant, sample=sample,
                                                trial=trial, phase="runtime", binary_bytes=size,
                                                measurement=value, **runtime))
+                    if runtime["status"] != "success":
+                        raise SystemExit(
+                            f"Stopped after {tier} {variant} runtime trial: {runtime['status']}; "
+                            f"see {runtime['log']}"
+                        )
 
 
 if __name__ == "__main__":
