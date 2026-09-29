@@ -15,10 +15,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: longbridge/rust-i18n
-          ref: c47194deeee01c7ce75b883193ed96fc048df235
+          ref: fb1deb45f4fafa8fec708d97051a3a0031d2cd5c
           path: upstream-main
+      - uses: actions/checkout@v4
+        with:
+          repository: nickpresta/rust-i18n
+          ref: dac0cac8f9dd10a166bfef4c377f541ec6faefc7
+          path: pr-candidate
       - name: Record runner resources
         run: |
+          test "$(git -C upstream-main rev-parse HEAD)" = fb1deb45f4fafa8fec708d97051a3a0031d2cd5c
+          test "$(git -C pr-candidate rev-parse HEAD)" = dac0cac8f9dd10a166bfef4c377f541ec6faefc7
           rustc -Vv
           cargo -V
           free -h
@@ -27,12 +34,15 @@ jobs:
         run: |
           python3 benchmarks/packed_translations/run_matrix.py \
             --main "$GITHUB_WORKSPACE/upstream-main" \
-            --candidate "$GITHUB_WORKSPACE" \
+            --candidate "$GITHUB_WORKSPACE/pr-candidate" \
             --work-dir "$RUNNER_TEMP/packed-translations" \
-            --max-rss-gib 12 \
-            --max-seconds 1800 \
+            --tiers small,medium,large \
+            --runtime-trials 0 \
+            --max-rss-gib 9 \
+            --max-seconds 900 \
             --min-disk-gib 2 \
             --min-swap-mib 0 \
+            --min-memory-percent 15 \
             --warm-online
       - name: Save benchmark evidence
         if: always()

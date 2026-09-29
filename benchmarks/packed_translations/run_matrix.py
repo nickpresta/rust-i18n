@@ -290,7 +290,9 @@ def main() -> None:
                 row.pop("runtime_output")
                 append_result(output, row)
                 if row["status"] != "success":
-                    continue
+                    raise SystemExit(
+                        f"Stopped after {tier} {variant} build: {row['status']}; see {row['log']}"
+                    )
                 binary = crate / "target/release/bench_i18n"
                 size = binary.stat().st_size
                 for trial in range(1, args.runtime_trials + 1):
